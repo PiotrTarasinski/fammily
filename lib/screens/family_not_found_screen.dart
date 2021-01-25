@@ -2,6 +2,7 @@ import 'package:fammily/api/family.dart';
 import 'package:fammily/components/background.dart';
 import 'package:fammily/components/input.dart';
 import 'package:fammily/components/or_divider.dart';
+import 'package:fammily/components/side_bar.dart';
 import 'package:fammily/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -106,6 +107,7 @@ class _FamilyNotFoundScreenState extends State<FamilyNotFoundScreen> {
     }
 
     return Scaffold(
+      drawer: SideBar(),
       body: Background(
         child: SingleChildScrollView(
           child: Column(
