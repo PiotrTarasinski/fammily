@@ -1,7 +1,10 @@
+import 'package:fammily/api/user.dart';
 import 'package:fammily/components/background.dart';
+import 'package:fammily/components/input.dart';
 import 'package:fammily/components/or_divider.dart';
 import 'package:fammily/components/social_icon.dart';
 import 'package:fammily/screens/login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -9,8 +12,59 @@ class RegisterScreen extends StatefulWidget {
   _RegisterScreenState createState() => _RegisterScreenState();
 }
 
+class _RegisterData {
+  String name = '';
+  String email = '';
+  String password = '';
+
+  void setEmail(String value) {
+    this.email = value;
+  }
+
+  void setPassword(String value) {
+    this.password = value;
+  }
+
+  void setName(String value) {
+    this.name = value;
+  }
+}
+
 class _RegisterScreenState extends State<RegisterScreen> {
+  final _registerFormKey = GlobalKey<FormState>();
   bool _showPassword = false;
+  _RegisterData _registerData = new _RegisterData();
+
+  void register() async {
+    if (_registerFormKey.currentState.validate()) {
+      _registerFormKey.currentState.save();
+      try {
+        User user = (await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: _registerData.email, password: _registerData.password))
+            .user;
+        FirestoreUserController.addUser(
+            user.uid, _registerData.name);
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'weak-password') {
+          print('The password provided is too weak.');
+        } else if (e.code == 'email-already-in-use') {
+          print('The account already exists for that email.');
+        }
+      } catch (e) {
+        print(e);
+      }
+      try {
+       await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: _registerData.email, password: _registerData.password);
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'user-not-found') {
+          print('No user found for that email.');
+        } else if (e.code == 'wrong-password') {
+          print('Wrong password provided for that user.');
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +77,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
             },
             child: Background(
               child: SingleChildScrollView(
-                child: Column(
+                child: Form(
+                    key: _registerFormKey,
+                    child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     SizedBox(height: 32),
@@ -36,56 +92,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     SizedBox(height: 48),
                     Container(
                         margin: EdgeInsets.symmetric(horizontal: 24),
-                        child: TextField(
+                        child: Input(
+                          label: 'Name',
+                          icon: Icon(Icons.person),
+                          onSaveFunc: this._registerData.setEmail,
                           keyboardType: TextInputType.name,
-                          decoration: InputDecoration(
-                              labelText: 'Name',
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(),
-                              ),
-                              prefixIcon: Icon(
-                                  Icons.person
-                              )
-                          ),
                         )
                     ),
-                    SizedBox(height: 32),
                     Container(
                         margin: EdgeInsets.symmetric(horizontal: 24),
-                        child: TextField(
+                        child: Input(
+                          label: 'Email',
+                          icon: Icon(Icons.email),
+                          onSaveFunc: this._registerData.setEmail,
                           keyboardType: TextInputType.emailAddress,
-                          decoration: InputDecoration(
-                              labelText: 'Email',
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(),
-                              ),
-                              prefixIcon: Icon(
-                                  Icons.email
-                              )
-                          ),
                         )
                     ),
-                    SizedBox(height: 32),
                     Container(
                         margin: EdgeInsets.symmetric(horizontal: 24),
-                        child: TextField(
-                          keyboardType: TextInputType.visiblePassword,
+                        child: Input(
+                          label: 'Password',
+                          icon: Icon(Icons.lock),
                           obscureText: !_showPassword,
-                          decoration: InputDecoration(
-                              labelText: 'Password',
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(),
-                              ),
-                              prefixIcon: Icon(Icons.lock),
-                              suffixIcon: IconButton(
-                                icon: Icon(!_showPassword ? Icons.visibility : Icons.visibility_off),
-                                onPressed: () {
-                                  setState(() {
-                                    _showPassword = !_showPassword;
-                                  });
-                                },
-                              )
-                          ),
+                          onSaveFunc: this._registerData.setPassword,
+                          keyboardType: TextInputType.visiblePassword,
                         )
                     ),
                     SizedBox(height: 28),
@@ -106,9 +136,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             fontSize: 18
                           ),
                         ),
-                        onPressed: () {
-                          print('@TODO Sign up');
-                        },
+                        onPressed: this.register,
                       )
                     ),
                     SizedBox(height: 28),
@@ -167,7 +195,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     SizedBox(height: 32),
                   ],
-                ),
+                )),
               ),
             )
         )

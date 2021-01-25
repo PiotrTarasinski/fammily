@@ -1,6 +1,9 @@
 import 'package:fammily/components/family_member.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import '../main.dart';
 
 class FamilyScreen extends StatefulWidget {
   @override
@@ -8,6 +11,16 @@ class FamilyScreen extends StatefulWidget {
 }
 
 class _FamilyScreenState extends State<FamilyScreen> {
+
+  Function logout(BuildContext context) {
+    return () async {
+      await FirebaseAuth.instance.signOut();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+        return MyHomePage();
+      }));
+      print('Logged out');
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +44,11 @@ class _FamilyScreenState extends State<FamilyScreen> {
                   onPressed: () {
                     print('@TODO Go to family settings');
                   },
+                ),
+                IconButton(
+                  icon: Icon(Icons.logout),
+                  // color: Colors.grey[600],
+                  onPressed: logout(context),
                 ),
               ],
               title: Text(

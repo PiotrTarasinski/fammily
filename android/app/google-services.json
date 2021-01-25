@@ -1,0 +1,77 @@
+{
+  "project_info": {
+    "project_number": "155284988767",
+    "firebase_url": "https://fmml-291dc.firebaseio.com",
+    "project_id": "fmml-291dc",
+    "storage_bucket": "fmml-291dc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:155284988767:android:224b7138c6a29cc2ae4cea",
+        "android_client_info": {
+          "package_name": "com.example.fammily"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "155284988767-ctffmtnr5v2d6o2s9hvbtbuv8k6vf9su.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8pl05gBdAAJNNg84BRok9U7G0AzOZrDg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "155284988767-ctffmtnr5v2d6o2s9hvbtbuv8k6vf9su.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:155284988767:android:69fa9764ef801629ae4cea",
+        "android_client_info": {
+          "package_name": "fammily.flutter_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "155284988767-4n5837ed41retdusgrri3ebdocmmj9ev.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "fammily.flutter_app",
+            "certificate_hash": "e0a4010daf31992d3664481503d8a3eadf8b3e91"
+          }
+        },
+        {
+          "client_id": "155284988767-ctffmtnr5v2d6o2s9hvbtbuv8k6vf9su.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8pl05gBdAAJNNg84BRok9U7G0AzOZrDg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "155284988767-ctffmtnr5v2d6o2s9hvbtbuv8k6vf9su.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
