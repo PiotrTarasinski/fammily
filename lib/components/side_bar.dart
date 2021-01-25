@@ -1,4 +1,5 @@
 import 'package:fammily/screens/login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SideBar extends StatefulWidget {
@@ -10,6 +11,15 @@ class _SideBarState extends State<SideBar> {
   String _name = 'Piotr Tarasiński';
   String _email = 'piotrt337@gmail.com';
   String _avatarUrl = 'https://lh3.google.com/u/2/ogw/ADGmqu-1qFo7IGTMem4XaXpxU-5SVycTjnutzBwsOYw=s83-c-mo';
+
+  Function logout(BuildContext context) {
+    return () async {
+      await FirebaseAuth.instance.signOut();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+        return LoginScreen();
+      }));
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,17 +73,7 @@ class _SideBarState extends State<SideBar> {
                   color: Colors.pink
               ),
             ),
-            onTap: () {
-              print('@TODO Logout');
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return LoginScreen();
-                  },
-                ),
-              );
-            },
+            onTap: logout(context),
           ),
         ],
       ),

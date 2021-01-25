@@ -1,5 +1,6 @@
 import 'package:fammily/components/side_bar.dart';
 import 'package:fammily/screens/family_screen.dart';
+import 'package:fammily/screens/map_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -12,9 +13,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   static List<Widget> _widgetOptions = <Widget>[
     FamilyScreen(),
-    Center(
-      child: Text('Map'),
-    ),
+    MapScreen(),
     Center(
       child: Text('Chat'),
     ),
