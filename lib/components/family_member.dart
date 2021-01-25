@@ -1,14 +1,49 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
-class FamilyMember extends StatelessWidget {
+class FamilyMember extends StatefulWidget {
   final String avatarSrc;
   final String name;
-
-  const FamilyMember({
-    Key key,
+  final String uid;
+  FamilyMember({
     this.avatarSrc,
     this.name,
-  }) : super(key: key);
+    this.uid,
+  });
+  @override
+  _FamilyMemberState createState() => _FamilyMemberState(
+    avatarSrc: avatarSrc,
+    name: name,
+    uid: this.uid,
+  );
+}
+
+class _FamilyMemberState extends State<FamilyMember> {
+  final String avatarSrc;
+  final String name;
+  final String uid;
+  String url = null;
+
+  _FamilyMemberState({
+    this.avatarSrc,
+    this.name,
+    this.uid,
+  }) {
+    getURL();
+  }
+
+
+
+  Future<void> getURL() async {
+    try {
+      url = await FirebaseStorage.instance.ref().child('images').child(uid+'.jpg').getDownloadURL();
+    } catch (e) {
+      print(e);
+    }
+    setState(() {
+      url = url;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +61,7 @@ class FamilyMember extends StatelessWidget {
             children: <Widget>[
               CircleAvatar(
                 backgroundColor: Colors.white,
-                backgroundImage: NetworkImage(avatarSrc),
+                backgroundImage: url != null ? NetworkImage(url) : AssetImage('assets/images/default.png'),
                 radius: 28,
               ),
               SizedBox(width: 20),

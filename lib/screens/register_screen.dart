@@ -42,7 +42,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         User user = (await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: _registerData.email, password: _registerData.password))
             .user;
-        FirestoreUserController.addUser(
+        await FirestoreUserController.addUser(
             user.uid, _registerData.name);
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
@@ -95,7 +95,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         child: Input(
                           label: 'Name',
                           icon: Icon(Icons.person),
-                          onSaveFunc: this._registerData.setEmail,
+                          onSaveFunc: this._registerData.setName,
                           keyboardType: TextInputType.name,
                         )
                     ),
