@@ -10,8 +10,6 @@ class FamilyList extends StatefulWidget {
 
 class _FamilyListState extends State<FamilyList> {
   Future<List<Map<String, dynamic>>> users;
-  final String _userAvatarUrl =
-      'https://lh3.google.com/u/2/ogw/ADGmqu-1qFo7IGTMem4XaXpxU-5SVycTjnutzBwsOYw=s83-c-mo';
   _FamilyListState() {
     users = FirestoreFamilyController.getFamilyUsers();
   }
@@ -36,7 +34,6 @@ class _FamilyListState extends State<FamilyList> {
             return Column(
               children: [
                 for (var element in snapshot.data) FamilyMember(
-                  avatarSrc: _userAvatarUrl,
                   name: element['name'],
                   uid: element['uid'],
                 )
