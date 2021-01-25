@@ -6,7 +6,7 @@ class FirestoreUserController {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
     // Call the user's CollectionReference to add a new user
     return users
-        .add({'uid': uid, 'name': name})
+        .add({'uid': uid, 'name': name, 'location': GeoPoint(0,0)})
         .then((value) => print("User Added"))
         .catchError((error) => print("Failed to add user: $error"));
   }
