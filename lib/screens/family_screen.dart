@@ -1,4 +1,9 @@
+import 'package:fammily/api/family.dart';
+import 'package:fammily/api/user.dart';
+import 'package:fammily/components/family_list.dart';
 import 'package:fammily/components/family_member.dart';
+import 'package:fammily/components/invite_code.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -10,6 +15,14 @@ class FamilyScreen extends StatefulWidget {
 }
 
 class _FamilyScreenState extends State<FamilyScreen> {
+  Future<Map<String, dynamic>> _userData;
+
+  _FamilyScreenState() {
+    FirestoreUserController.getUserDataById(
+        FirebaseAuth.instance.currentUser.uid).then((value) {
+          // print(value);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,21 +61,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
               ),
             ),
             SizedBox(height: 8),
-            GestureDetector(
-              onTap: () {
-                Clipboard.setData(ClipboardData(text: _inviteCode));
-                Scaffold.of(context).showSnackBar(SnackBar(content: Text('Invite code copied to clipboard')));
-              },
-              child: Text(
-                _inviteCode,
-                style: TextStyle(
-                  color: Colors.deepPurple,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 42,
-                  letterSpacing: 10,
-                ),
-              ),
-            ),
+           InviteCode(),
             SizedBox(height: 24),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -87,18 +86,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
                 ],
               ),
             ),
-            FamilyMember(
-              avatarSrc: _userAvatarUrl,
-              name: 'Piotr Tarasiński',
-            ),
-            FamilyMember(
-              avatarSrc: _userAvatarUrl,
-              name: 'Szymon Tokarzewski',
-            ),
-            FamilyMember(
-              avatarSrc: _userAvatarUrl,
-              name: 'Adam Małysz',
-            ),
+            FamilyList(),
           ],
       ),
     );
