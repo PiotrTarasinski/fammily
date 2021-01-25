@@ -1,3 +1,5 @@
+import 'package:fammily/api/user.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
@@ -22,26 +24,21 @@ class _FamilyMemberState extends State<FamilyMember> {
   final String avatarSrc;
   final String name;
   final String uid;
-  String url = null;
+  bool isCurrentUser = false;
+  String url;
 
   _FamilyMemberState({
     this.avatarSrc,
     this.name,
     this.uid,
   }) {
-    getURL();
-  }
-
-
-
-  Future<void> getURL() async {
-    try {
-      url = await FirebaseStorage.instance.ref().child('images').child(uid+'.jpg').getDownloadURL();
-    } catch (e) {
-      print(e);
-    }
-    setState(() {
-      url = url;
+    this.isCurrentUser = FirebaseAuth.instance.currentUser.uid == this.uid;
+    FirestoreUserController.getURL(uid).then((value) => {
+      this.setState(() {
+        this.url = value;
+      })
+    }).catchError((error) {
+      print(error);
     });
   }
 
@@ -78,7 +75,7 @@ class _FamilyMemberState extends State<FamilyMember> {
                   ),
                   SizedBox(height: 4),
                   Text(
-                    'Family owner',
+                    isCurrentUser ? 'It\'s a me' : 'Family owner',
                     style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey

@@ -1,3 +1,4 @@
+import 'package:fammily/api/user.dart';
 import 'package:fammily/screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +9,23 @@ class SideBar extends StatefulWidget {
 }
 
 class _SideBarState extends State<SideBar> {
-  String _name = 'Piotr Tarasiński';
-  String _email = 'piotrt337@gmail.com';
-  String _avatarUrl = 'https://lh3.google.com/u/2/ogw/ADGmqu-1qFo7IGTMem4XaXpxU-5SVycTjnutzBwsOYw=s83-c-mo';
+  User currentUser = FirebaseAuth.instance.currentUser;
+  Map<String, dynamic> user;
+  String avatarUrl;
+
+  _SideBarState() {
+    String uid = currentUser.uid;
+    FirestoreUserController.getUserDataById(uid).then((value) {
+      this.setState(() {
+        user = value;
+      });
+    });
+    FirestoreUserController.getURL(uid).then((value) {
+      this.setState(() {
+        avatarUrl = value;
+      });
+    });
+  }
 
   Function logout(BuildContext context) {
     return () async {
@@ -30,10 +45,11 @@ class _SideBarState extends State<SideBar> {
           UserAccountsDrawerHeader(
             currentAccountPicture: CircleAvatar(
               backgroundColor: Colors.white,
-              backgroundImage: NetworkImage(_avatarUrl),
+              backgroundImage: avatarUrl != null ? NetworkImage(avatarUrl) : AssetImage('assets/images/default.png'),
+              radius: 28,
             ),
-              accountName: Text(_name),
-              accountEmail: Text(_email),
+              accountName: Text(user != null ? user['name'] : ''),
+              accountEmail: Text(currentUser.email),
           ),
           ListTile(
             leading: Icon(Icons.account_circle),

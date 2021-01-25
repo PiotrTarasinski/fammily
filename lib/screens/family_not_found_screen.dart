@@ -1,6 +1,8 @@
+import 'package:fammily/api/family.dart';
 import 'package:fammily/components/background.dart';
 import 'package:fammily/components/input.dart';
 import 'package:fammily/components/or_divider.dart';
+import 'package:fammily/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class FamilyNotFoundScreen extends StatefulWidget {
@@ -8,7 +10,40 @@ class FamilyNotFoundScreen extends StatefulWidget {
   _FamilyNotFoundScreenState createState() => _FamilyNotFoundScreenState();
 }
 
+class _FamilyData {
+  String name = '';
+  void setName(String value) {
+    this.name = value;
+  }
+}
+
 class _FamilyNotFoundScreenState extends State<FamilyNotFoundScreen> {
+  final _formKey = GlobalKey<FormState>();
+  _FamilyData _data = new _FamilyData();
+  String input;
+
+  createFamily() async {
+      _formKey.currentState.save();
+      await FirestoreFamilyController.addFamily(_data.name);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+        return HomeScreen();
+      }));
+  }
+
+  joinFamily() async {
+    _formKey.currentState.save();
+    await FirestoreFamilyController.joinFamily(_data.name);
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+      return HomeScreen();
+    }));
+  }
+
+  onNameChange (String value) {
+    print(value);
+    setState(() {
+      input = value;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,11 +70,14 @@ class _FamilyNotFoundScreenState extends State<FamilyNotFoundScreen> {
             children: <Widget>[
               Container(
                   margin: EdgeInsets.symmetric(horizontal: 24),
-                  child: Input(
+                  child: Form(
+                    key: _formKey,
+                     child: Input(
                     label: _inputLabel,
                     icon: Icon(_inputIcon),
                     keyboardType: TextInputType.name,
-                  )
+                    onSaveFunc: _data.setName,
+                  ))
               ),
               SizedBox(height: 24),
               Container(
@@ -58,9 +96,7 @@ class _FamilyNotFoundScreenState extends State<FamilyNotFoundScreen> {
                         color: Colors.white,
                         fontSize: 18),
                   ),
-                  onPressed: () {
-                    print('@TODO');
-                  },
+                  onPressed: isCreateAction ? createFamily : joinFamily,
                 ),
               ),
             ],

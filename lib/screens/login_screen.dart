@@ -33,9 +33,8 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       try {
-        User user = (await FirebaseAuth.instance.signInWithEmailAndPassword(
-                email: _data.email, password: _data.password))
-            .user;
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+                email: _data.email, password: _data.password);
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
           print('No user found for that email.');
@@ -43,6 +42,9 @@ class _LoginScreenState extends State<LoginScreen> {
           print('Wrong password provided for that user.');
         }
       }
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+        return HomeScreen();
+      }));
     }
   }
 

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class FirestoreUserController {
   static Future<void> addUser(String uid, String name) { // Add new user to firestore
@@ -15,6 +16,14 @@ class FirestoreUserController {
         .collection('users')
         .where('uid', isEqualTo: uid)
         .get();
+  }
+
+  static Future<DocumentReference> getUserDocument(String uid) async {
+    String docId = (await FirebaseFirestore.instance
+        .collection('users')
+        .where('uid', isEqualTo: uid)
+        .get()).docs[0].id;
+    return FirebaseFirestore.instance.collection('users').doc(docId);
   }
 
   static Future<Map<String, dynamic>> getUserDataById(String uid) async { // Get user data with given id
@@ -34,5 +43,13 @@ class FirestoreUserController {
         .docs[0]
         .data();
     return data['name'];
+  }
+
+  static Future<String> getURL(String uid) async {
+    Reference images;
+    try {
+      images = FirebaseStorage.instance.ref().child('images').child(uid+'.jpg');
+    } catch (e) {}
+    return images.getDownloadURL();
   }
 }

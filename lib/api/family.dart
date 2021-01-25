@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fammily/api/user.dart';
+import 'package:fammily/utils/code_generator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class FirestoreFamilyController {
@@ -15,9 +16,37 @@ class FirestoreFamilyController {
     return users;
   }
 
+  static Future<void> addFamily(String name) async {
+    User user = FirebaseAuth.instance.currentUser;
+    DocumentReference userDocument = await FirestoreUserController.getUserDocument(user.uid);
+    CollectionReference families = FirebaseFirestore.instance.collection('family');
+    DocumentReference newFamily = await families.add({ 'code': FamilyCodeGenerator.generateCode(), 'name': name });
+    await newFamily.collection('users').add({ 'user': userDocument });
+    await userDocument.update({ 'family': newFamily });
+  }
+
+  static Future<void> joinFamily(String code) async {
+    User user = FirebaseAuth.instance.currentUser;
+    DocumentReference userDocument = await FirestoreUserController.getUserDocument(user.uid);
+    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('family').where('code', isEqualTo: code).get();
+    if (snapshot.docs.length > 0) {
+      String familyCollectionId = snapshot.docs[0].id;
+      DocumentReference family = FirebaseFirestore.instance.collection('family')
+          .doc(familyCollectionId);
+      await family.collection('users').add({ 'user': userDocument});
+      await userDocument.update({ 'family': family});
+    }
+  }
+
   static Future<String> getFamilyCode() async {
     User user = FirebaseAuth.instance.currentUser;
     DocumentReference family = (await FirestoreUserController.getUserDataById(user.uid))['family'];
     return (await family.get()).data()['code'];
+  }
+
+  static Future<String> getFamilyName() async {
+    User user = FirebaseAuth.instance.currentUser;
+    DocumentReference family = (await FirestoreUserController.getUserDataById(user.uid))['family'];
+    return (await family.get()).data()['name'];
   }
 }

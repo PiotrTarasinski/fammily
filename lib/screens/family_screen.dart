@@ -1,13 +1,9 @@
 import 'package:fammily/api/family.dart';
 import 'package:fammily/api/user.dart';
 import 'package:fammily/components/family_list.dart';
-import 'package:fammily/components/family_member.dart';
 import 'package:fammily/components/invite_code.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
-import '../main.dart';
 
 class FamilyScreen extends StatefulWidget {
   @override
@@ -15,23 +11,18 @@ class FamilyScreen extends StatefulWidget {
 }
 
 class _FamilyScreenState extends State<FamilyScreen> {
-  Future<Map<String, dynamic>> _userData;
+  String _familyName = '';
 
   _FamilyScreenState() {
-    FirestoreUserController.getUserDataById(
-        FirebaseAuth.instance.currentUser.uid).then((value) {
-          // print(value);
+    FirestoreFamilyController.getFamilyName().then((value) {
+      this.setState(() {
+        _familyName = value;
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    Size _size = MediaQuery.of(context).size;
-    String _familyName = 'Super Rodzinka';
-    String _inviteCode = 'Q5RST';
-
-    // Move it to list
-    String _userAvatarUrl = 'https://lh3.google.com/u/2/ogw/ADGmqu-1qFo7IGTMem4XaXpxU-5SVycTjnutzBwsOYw=s83-c-mo';
 
     return SingleChildScrollView(
       child: Column(

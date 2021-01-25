@@ -7,6 +7,8 @@ import 'package:fammily/screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'home_screen.dart';
+
 class RegisterScreen extends StatefulWidget {
   @override
   _RegisterScreenState createState() => _RegisterScreenState();
@@ -63,6 +65,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
           print('Wrong password provided for that user.');
         }
       }
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+        return HomeScreen();
+      }));
     }
   }
 
