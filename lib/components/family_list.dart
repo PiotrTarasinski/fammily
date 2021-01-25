@@ -2,7 +2,6 @@ import 'package:fammily/api/family.dart';
 import 'package:flutter/material.dart';
 
 import 'family_member.dart';
-import 'family_member.dart';
 
 class FamilyList extends StatefulWidget {
   @override

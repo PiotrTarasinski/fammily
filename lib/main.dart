@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fammily/api/user.dart';
 import 'package:fammily/screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -65,14 +67,24 @@ class _MyHomePageState extends State<MyHomePage> {
       });
       return firebaseApp;
     });
-
   }
+
+  StreamSubscription<Position> positionStream = Geolocator.getPositionStream(
+    desiredAccuracy: LocationAccuracy.high,
+    distanceFilter: 10,
+    intervalDuration: Duration(seconds: 5),
+  ).listen((Position position) async {
+    GeoPoint geoPoint = GeoPoint(position.latitude, position.longitude);
+    String docId = (await FirestoreUserController.getUser(FirebaseAuth.instance.currentUser.uid)).docs[0].id;
+    FirebaseFirestore.instance.collection('users').doc(docId).update({'location': geoPoint});
+  });
 
   @override
   void dispose() {
     if (stream != null) {
       stream.cancel();
     }
+    positionStream.cancel();
     super.dispose();
   }
 
