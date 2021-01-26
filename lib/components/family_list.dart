@@ -21,8 +21,8 @@ class _FamilyListState extends State<FamilyList> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                CircularProgressIndicator(),
-            ])),
+                  CircularProgressIndicator(),
+                ])),
       );
 
   @override
@@ -33,11 +33,12 @@ class _FamilyListState extends State<FamilyList> {
           if (snapshot.hasData) {
             return Column(
               children: [
-                for (var element in snapshot.data) FamilyMember(
-                  name: element['name'],
-                  uid: element['uid'],
-                  role: element['role'],
-                )
+                for (var element in snapshot.data)
+                  FamilyMember(
+                    name: element['name'],
+                    uid: element['uid'],
+                    role: element['role'],
+                  )
               ],
             );
           }

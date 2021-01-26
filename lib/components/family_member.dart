@@ -19,11 +19,11 @@ class FamilyMember extends StatefulWidget {
   });
   @override
   _FamilyMemberState createState() => _FamilyMemberState(
-    avatarSrc: avatarSrc,
-    name: name,
-    uid: this.uid,
-    role: this.role,
-  );
+        avatarSrc: avatarSrc,
+        name: name,
+        uid: this.uid,
+        role: this.role,
+      );
 }
 
 class _FamilyMemberState extends State<FamilyMember> {
@@ -42,14 +42,18 @@ class _FamilyMemberState extends State<FamilyMember> {
     this.role,
   }) {
     this.isCurrentUser = FirebaseAuth.instance.currentUser.uid == this.uid;
-    FirestoreUserController.getURL(uid).then((value) => {
-      this.setState(() {
-        this.url = value;
-      })
-    }).catchError((error) {
+    FirestoreUserController.getURL(uid)
+        .then((value) => {
+              this.setState(() {
+                this.url = value;
+              })
+            })
+        .catchError((error) {
       print(error);
     });
-    FirestoreUserController.getUserDataById(FirebaseAuth.instance.currentUser.uid).then((value) {
+    FirestoreUserController.getUserDataById(
+            FirebaseAuth.instance.currentUser.uid)
+        .then((value) {
       this.setState(() {
         isCurrentUserOwner = value['role'] == 'OWNER';
       });
@@ -57,7 +61,9 @@ class _FamilyMemberState extends State<FamilyMember> {
   }
 
   Future<void> _showMyDialog() async {
-    String message = isCurrentUser ? 'Are you sure you want to leave this family?' : 'Are you sure you want to remove this user from the family?';
+    String message = isCurrentUser
+        ? 'Are you sure you want to leave this family?'
+        : 'Are you sure you want to remove this user from the family?';
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -89,7 +95,8 @@ class _FamilyMemberState extends State<FamilyMember> {
 
   handleRemoveOnPress() async {
     if (isCurrentUser) {
-      await FirestoreFamilyController.leaveFamily(FirebaseAuth.instance.currentUser.uid);
+      await FirestoreFamilyController.leaveFamily(
+          FirebaseAuth.instance.currentUser.uid);
     } else {
       await FirestoreFamilyController.leaveFamily(uid);
     }
@@ -103,10 +110,8 @@ class _FamilyMemberState extends State<FamilyMember> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-          border: Border(
-              bottom: BorderSide(width: 1, color: Colors.grey[300])
-          )
-      ),
+          border:
+              Border(bottom: BorderSide(width: 1, color: Colors.grey[300]))),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -114,7 +119,9 @@ class _FamilyMemberState extends State<FamilyMember> {
             children: <Widget>[
               CircleAvatar(
                 backgroundColor: Colors.white,
-                backgroundImage: url != null ? NetworkImage(url) : AssetImage('assets/images/default.png'),
+                backgroundImage: url != null
+                    ? NetworkImage(url)
+                    : AssetImage('assets/images/default.png'),
                 radius: 28,
               ),
               SizedBox(width: 20),
@@ -126,28 +133,25 @@ class _FamilyMemberState extends State<FamilyMember> {
                     style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: Colors.deepPurple
-                    ),
+                        color: Colors.deepPurple),
                   ),
                   SizedBox(height: 4),
                   Text(
                     role == 'OWNER' ? 'Family owner' : 'Family member',
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey
-                    ),
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
                   ),
                 ],
               ),
             ],
           ),
-          if (isCurrentUser || isCurrentUserOwner) IconButton(
+          if (isCurrentUser || isCurrentUserOwner)
+            IconButton(
               icon: Icon(
                 Icons.person_remove_rounded,
                 color: Colors.grey[600],
               ),
               onPressed: _showMyDialog,
-          ),
+            ),
         ],
       ),
     );

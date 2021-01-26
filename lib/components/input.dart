@@ -4,19 +4,19 @@ import 'package:flutter/material.dart';
 class Input extends StatefulWidget {
   final String label;
   final String hintText;
-  final Icon  icon;
-  final IconButton  suffixIcon;
+  final Icon icon;
+  final IconButton suffixIcon;
   final bool obscureText;
   final TextInputType keyboardType;
   final void Function(String) onSaveFunc;
   Input(
       {this.label,
-        this.hintText,
-        this.icon,
-        this.obscureText = false,
-        this.onSaveFunc,
-        this.keyboardType,
-        this.suffixIcon});
+      this.hintText,
+      this.icon,
+      this.obscureText = false,
+      this.onSaveFunc,
+      this.keyboardType,
+      this.suffixIcon});
   @override
   _InputState createState() => _InputState(
       hintText: hintText,
@@ -40,12 +40,12 @@ class _InputState extends State<Input> {
 
   _InputState(
       {this.label,
-        this.hintText,
-        this.icon,
-        this.obscureText = false,
-        this.onSaveFunc,
-        this.keyboardType,
-        this.suffixIcon});
+      this.hintText,
+      this.icon,
+      this.obscureText = false,
+      this.onSaveFunc,
+      this.keyboardType,
+      this.suffixIcon});
 
   @override
   Widget build(BuildContext context) {
@@ -53,32 +53,32 @@ class _InputState extends State<Input> {
       SizedBox(height: 24.0),
       Container(
           child: TextFormField(
-            validator: (value) {
-              if (value.isEmpty) {
-                setState(() {
-                  this.error = 'This field is required';
-                });
-              } else {
-                setState(() {
-                  error = null;
-                });
-              }
-              return null;
-            },
-            onSaved: (String value) {
-              onSaveFunc(value);
-            },
-            obscureText: obscureText,
-            keyboardType: this.keyboardType,
-            decoration: InputDecoration(
-                labelText: this.label,
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(),
-                ),
-                prefixIcon: this.icon,
-                suffixIcon: this.suffixIcon,
-            ),
-          )),
+        validator: (value) {
+          if (value.isEmpty) {
+            setState(() {
+              this.error = 'This field is required';
+            });
+          } else {
+            setState(() {
+              error = null;
+            });
+          }
+          return null;
+        },
+        onSaved: (String value) {
+          onSaveFunc(value);
+        },
+        obscureText: obscureText,
+        keyboardType: this.keyboardType,
+        decoration: InputDecoration(
+          labelText: this.label,
+          border: OutlineInputBorder(
+            borderSide: BorderSide(),
+          ),
+          prefixIcon: this.icon,
+          suffixIcon: this.suffixIcon,
+        ),
+      )),
       if (this.error != null)
         Container(
           child: Text(this.error,
