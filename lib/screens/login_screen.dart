@@ -44,6 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
         } else if (e.code == 'wrong-password') {
           print('Wrong password provided for that user.');
         }
+        return;
       }
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
         return HomeScreen();
@@ -68,6 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } catch (e) {
       print(e);
+      return;
     }
 
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {

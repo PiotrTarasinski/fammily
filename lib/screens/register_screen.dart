@@ -51,8 +51,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
         } else if (e.code == 'email-already-in-use') {
           print('The account already exists for that email.');
         }
+        return;
       } catch (e) {
         print(e);
+        return;
       }
       try {
         await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -63,6 +65,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         } else if (e.code == 'wrong-password') {
           print('Wrong password provided for that user.');
         }
+        return;
       }
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
         return HomeScreen();
