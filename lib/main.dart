@@ -60,7 +60,6 @@ class _MyHomePageState extends State<MyHomePage> {
   _MyHomePageState() {
     _initialization = Firebase.initializeApp().then((FirebaseApp firebaseApp) {
       _user = FirebaseAuth.instance.currentUser;
-      FirebaseAuth.instance.signOut();
       stream = FirebaseAuth.instance.authStateChanges().listen((event) {
         setState(() {
           _user = event;
