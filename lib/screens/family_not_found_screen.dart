@@ -24,11 +24,11 @@ class _FamilyNotFoundScreenState extends State<FamilyNotFoundScreen> {
   String input;
 
   createFamily() async {
-      _formKey.currentState.save();
-      await FirestoreFamilyController.addFamily(_data.name);
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-        return HomeScreen();
-      }));
+    _formKey.currentState.save();
+    await FirestoreFamilyController.addFamily(_data.name);
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+      return HomeScreen();
+    }));
   }
 
   joinFamily() async {
@@ -39,7 +39,7 @@ class _FamilyNotFoundScreenState extends State<FamilyNotFoundScreen> {
     }));
   }
 
-  onNameChange (String value) {
+  onNameChange(String value) {
     setState(() {
       input = value;
     });
@@ -56,30 +56,76 @@ class _FamilyNotFoundScreenState extends State<FamilyNotFoundScreen> {
       IconData _inputIcon = isCreateAction ? Icons.group : Icons.vpn_key;
 
       await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return SimpleDialog(
-            title: Text(
-              _titleText,
-              style: TextStyle(
-                color: Colors.deepPurple,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+          context: context,
+          builder: (BuildContext context) {
+            return SimpleDialog(
+              title: Text(
+                _titleText,
+                style: TextStyle(
+                  color: Colors.deepPurple,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            children: <Widget>[
-              Container(
+              children: <Widget>[
+                Container(
+                    margin: EdgeInsets.symmetric(horizontal: 24),
+                    child: Form(
+                        key: _formKey,
+                        child: Input(
+                          label: _inputLabel,
+                          icon: Icon(_inputIcon),
+                          keyboardType: TextInputType.name,
+                          onSaveFunc: _data.setName,
+                        ))),
+                SizedBox(height: 24),
+                Container(
                   margin: EdgeInsets.symmetric(horizontal: 24),
-                  child: Form(
-                    key: _formKey,
-                     child: Input(
-                    label: _inputLabel,
-                    icon: Icon(_inputIcon),
-                    keyboardType: TextInputType.name,
-                    onSaveFunc: _data.setName,
-                  ))
+                  width: _size.width,
+                  child: FlatButton(
+                    color: Colors.deepPurple,
+                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 40),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      _submitButtonText,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 18),
+                    ),
+                    onPressed: isCreateAction ? createFamily : joinFamily,
+                  ),
+                ),
+              ],
+            );
+          });
+    }
+
+    return Scaffold(
+      drawer: SideBar(),
+      body: Background(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(height: 32),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 18),
+                child: Image.asset(
+                  "assets/images/family.png",
+                ),
               ),
-              SizedBox(height: 24),
+              SizedBox(height: 32),
+              Text(
+                "You are yet to join a family",
+                style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.deepPurple),
+              ),
+              SizedBox(height: 36),
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 24),
                 width: _size.width,
@@ -90,92 +136,43 @@ class _FamilyNotFoundScreenState extends State<FamilyNotFoundScreen> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    _submitButtonText,
+                    'Create Family',
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                         fontSize: 18),
                   ),
-                  onPressed: isCreateAction ? createFamily : joinFamily,
+                  onPressed: () {
+                    _showDialog(true);
+                  },
                 ),
               ),
-            ],
-          );
-        }
-      );
-    }
-
-    return Scaffold(
-      drawer: SideBar(),
-      body: Background(
-        child: SingleChildScrollView(
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(height: 32),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 18),
-                  child: Image.asset(
-                    "assets/images/family.png",
+              SizedBox(height: 20),
+              OrDivider(),
+              SizedBox(height: 20),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 24),
+                width: _size.width,
+                child: FlatButton(
+                  color: Colors.deepPurple,
+                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 40),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                ),
-                SizedBox(height: 32),
-                Text(
-                  "You are yet to join a family",
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.deepPurple
-                  ),
-                ),
-                SizedBox(height: 36),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 24),
-                  width: _size.width,
-                  child: FlatButton(
-                    color: Colors.deepPurple,
-                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 40),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      'Create Family',
-                      style: TextStyle(
+                  child: Text(
+                    'Join With Code',
+                    style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                         fontSize: 18),
-                    ),
-                    onPressed: () {
-                      _showDialog(true);
-                    },
                   ),
+                  onPressed: () {
+                    _showDialog(false);
+                  },
                 ),
-                SizedBox(height: 20),
-                OrDivider(),
-                SizedBox(height: 20),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 24),
-                  width: _size.width,
-                  child: FlatButton(
-                    color: Colors.deepPurple,
-                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 40),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      'Join With Code',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          fontSize: 18),
-                    ),
-                    onPressed: () {
-                      _showDialog(false);
-                    },
-                  ),
-                ),
-                SizedBox(height: 32),
-              ],
+              ),
+              SizedBox(height: 32),
+            ],
           ),
         ),
       ),

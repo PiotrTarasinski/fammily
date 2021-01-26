@@ -46,19 +46,19 @@ class _SideBarState extends State<SideBar> {
           UserAccountsDrawerHeader(
             currentAccountPicture: CircleAvatar(
               backgroundColor: Colors.white,
-              backgroundImage: avatarUrl != null ? NetworkImage(avatarUrl) : AssetImage('assets/images/default.png'),
+              backgroundImage: avatarUrl != null
+                  ? NetworkImage(avatarUrl)
+                  : AssetImage('assets/images/default.png'),
               radius: 28,
             ),
-              accountName: Text(user != null ? user['name'] : ''),
-              accountEmail: Text(currentUser.email),
+            accountName: Text(user != null ? user['name'] : ''),
+            accountEmail: Text(currentUser.email),
           ),
           ListTile(
             leading: Icon(Icons.account_circle),
             title: Text(
               'My Profile',
-              style: TextStyle(
-                  color: Colors.grey[700]
-              ),
+              style: TextStyle(color: Colors.grey[700]),
             ),
             onTap: () {
               Navigator.push(
@@ -75,9 +75,7 @@ class _SideBarState extends State<SideBar> {
             leading: Icon(Icons.settings),
             title: Text(
               'Settings',
-              style: TextStyle(
-                  color: Colors.grey[700]
-              ),
+              style: TextStyle(color: Colors.grey[700]),
             ),
             onTap: () {
               print('@TODO Redirect to settings screen');
@@ -92,9 +90,7 @@ class _SideBarState extends State<SideBar> {
             ),
             title: Text(
               'Logout',
-              style: TextStyle(
-                  color: Colors.pink
-              ),
+              style: TextStyle(color: Colors.pink),
             ),
             onTap: logout(context),
           ),

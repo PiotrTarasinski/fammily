@@ -37,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
       _formKey.currentState.save();
       try {
         await FirebaseAuth.instance.signInWithEmailAndPassword(
-                email: _data.email, password: _data.password);
+            email: _data.email, password: _data.password);
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
           print('No user found for that email.');
@@ -53,20 +53,21 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> signInWithGoogle() async {
     final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
     final GoogleAuthCredential credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
     try {
-      User user = (await FirebaseAuth.instance.signInWithCredential(credential)).user;
+      User user =
+          (await FirebaseAuth.instance.signInWithCredential(credential)).user;
       QuerySnapshot userData = await FirestoreUserController.getUser(user.uid);
       if (userData.docs.length == 0) {
-        await FirestoreUserController.addUser(
-            user.uid, user.displayName);
+        await FirestoreUserController.addUser(user.uid, user.displayName);
       }
     } catch (e) {
-      print (e);
+      print(e);
     }
 
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {

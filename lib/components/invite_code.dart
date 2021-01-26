@@ -15,15 +15,15 @@ class _InviteCodeState extends State<InviteCode> {
   }
 
   loading() => Center(
-    child: SizedBox(
-        height: 50.0,
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CircularProgressIndicator(),
-            ])),
-  );
+        child: SizedBox(
+            height: 50.0,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                ])),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -31,10 +31,11 @@ class _InviteCodeState extends State<InviteCode> {
         future: code,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return  GestureDetector(
+            return GestureDetector(
               onTap: () {
                 Clipboard.setData(ClipboardData(text: snapshot.data));
-                Scaffold.of(context).showSnackBar(SnackBar(content: Text('Invite code copied to clipboard')));
+                Scaffold.of(context).showSnackBar(
+                    SnackBar(content: Text('Invite code copied to clipboard')));
               },
               child: Text(
                 snapshot.data,

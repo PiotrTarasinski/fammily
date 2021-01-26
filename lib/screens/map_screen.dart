@@ -64,7 +64,8 @@ class _MapScreenState extends State<MapScreen> {
         if (user['location'] != null) {
           markers.add(Marker(
             markerId: MarkerId(user['uid']),
-            position: LatLng(user['location'].latitude, user['location'].longitude),
+            position:
+                LatLng(user['location'].latitude, user['location'].longitude),
           ));
         }
       }
@@ -84,7 +85,6 @@ class _MapScreenState extends State<MapScreen> {
                   CircularProgressIndicator(),
                 ])),
       );
-
 
   getInitCameraPosition(Map<String, dynamic> position) {
     LatLng _initCameraPosition =
