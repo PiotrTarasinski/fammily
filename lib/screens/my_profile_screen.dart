@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:fammily/api/user.dart';
 import 'package:fammily/components/input.dart';
 import 'package:fammily/components/side_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import 'package:image_picker/image_picker.dart';
 
 class MyProfileScreen extends StatefulWidget {
   @override
@@ -12,6 +16,8 @@ class MyProfileScreen extends StatefulWidget {
 class _MyProfileScreenState extends State<MyProfileScreen> {
   Future<Map<String, dynamic>> user;
   String avatarUrl;
+  File _image;
+  final picker = ImagePicker();
 
   _MyProfileScreenState() {
     User user = FirebaseAuth.instance.currentUser;
@@ -20,6 +26,88 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       this.setState(() {
         avatarUrl = value;
       });
+    });
+  }
+
+  _showDialog() async {
+    await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            title: Text(
+              'Add Image',
+              style: TextStyle(
+                color: Colors.deepPurple,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            children: <Widget>[
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.pop(context);
+                  getImage(ImageSource.camera);
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 6),
+                  child: Row(
+                    children: <Widget>[
+                      Icon(
+                          Icons.camera_alt,
+                          color: Colors.grey[700]
+                      ),
+                      SizedBox(width: 12),
+                      Text(
+                        'Camera',
+                        style: TextStyle(
+                            color: Colors.grey[700],
+                            fontSize: 16
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.pop(context);
+                  getImage(ImageSource.gallery);
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 6),
+                  child: Row(
+                    children: <Widget>[
+                      Icon(
+                          Icons.photo,
+                          color: Colors.grey[700]
+                      ),
+                      SizedBox(width: 12),
+                      Text(
+                        'Gallery',
+                        style: TextStyle(
+                            color: Colors.grey[700],
+                            fontSize: 16
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        });
+  }
+
+  Future getImage(ImageSource imgSrc) async {
+    final pickedFile = await picker.getImage(source: imgSrc);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+        print(pickedFile.path);
+      } else {
+        _image = null;
+      }
     });
   }
 
@@ -65,9 +153,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   children: <Widget>[
                     SizedBox(height: 42),
                     GestureDetector(
+                      onTap: _showDialog,
                       child: CircleAvatar(
                         backgroundColor: Colors.grey[100],
-                        backgroundImage: avatarUrl != null ? NetworkImage(avatarUrl) : AssetImage('assets/images/default.png'),
+                        backgroundImage: _image != null ? FileImage(_image)
+                            : avatarUrl != null ? NetworkImage(avatarUrl) : AssetImage('assets/images/default.png'),
                         radius: _size.width * 0.2,
                       ),
                     ),

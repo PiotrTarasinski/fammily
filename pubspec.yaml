@@ -23,6 +23,7 @@ environment:
 dependencies:
   google_maps_flutter: ^1.0.3
   geolocator: ^6.1.13
+  image_picker: ^0.6.7+21
   firebase_core: "0.5.2"
   firebase_auth: "^0.18.3"
   cloud_firestore: "^0.14.3"
