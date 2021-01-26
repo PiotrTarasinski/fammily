@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fammily/api/user.dart';
 import 'package:fammily/components/background.dart';
 import 'package:fammily/components/input.dart';
 import 'package:fammily/components/or_divider.dart';
@@ -6,6 +8,7 @@ import 'package:fammily/screens/home_screen.dart';
 import 'package:fammily/screens/register_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -46,6 +49,29 @@ class _LoginScreenState extends State<LoginScreen> {
         return HomeScreen();
       }));
     }
+  }
+
+  Future<void> signInWithGoogle() async {
+    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    final GoogleAuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+    try {
+      User user = (await FirebaseAuth.instance.signInWithCredential(credential)).user;
+      QuerySnapshot userData = await FirestoreUserController.getUser(user.uid);
+      if (userData.docs.length == 0) {
+        await FirestoreUserController.addUser(
+            user.uid, user.displayName);
+      }
+    } catch (e) {
+      print (e);
+    }
+
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+      return HomeScreen();
+    }));
   }
 
   @override
@@ -123,9 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             SocialIcon(
                               iconSrc: "assets/icons/google.svg",
-                              press: () {
-                                print('@TODO Sign in with Google');
-                              },
+                              press: signInWithGoogle,
                             ),
                           ],
                         ),

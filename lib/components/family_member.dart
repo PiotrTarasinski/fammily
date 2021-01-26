@@ -1,5 +1,8 @@
+import 'package:fammily/api/family.dart';
 import 'package:fammily/api/user.dart';
+import 'package:fammily/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
@@ -7,16 +10,19 @@ class FamilyMember extends StatefulWidget {
   final String avatarSrc;
   final String name;
   final String uid;
+  final String role;
   FamilyMember({
     this.avatarSrc,
     this.name,
     this.uid,
+    this.role,
   });
   @override
   _FamilyMemberState createState() => _FamilyMemberState(
     avatarSrc: avatarSrc,
     name: name,
     uid: this.uid,
+    role: this.role,
   );
 }
 
@@ -24,13 +30,16 @@ class _FamilyMemberState extends State<FamilyMember> {
   final String avatarSrc;
   final String name;
   final String uid;
+  final String role;
   bool isCurrentUser = false;
+  bool isCurrentUserOwner = false;
   String url;
 
   _FamilyMemberState({
     this.avatarSrc,
     this.name,
     this.uid,
+    this.role,
   }) {
     this.isCurrentUser = FirebaseAuth.instance.currentUser.uid == this.uid;
     FirestoreUserController.getURL(uid).then((value) => {
@@ -40,6 +49,22 @@ class _FamilyMemberState extends State<FamilyMember> {
     }).catchError((error) {
       print(error);
     });
+    FirestoreUserController.getUserDataById(FirebaseAuth.instance.currentUser.uid).then((value) {
+      this.setState(() {
+        isCurrentUserOwner = value['role'] == 'OWNER';
+      });
+    });
+  }
+
+  handleRemoveOnPress() async {
+    if (isCurrentUser) {
+      await FirestoreFamilyController.leaveFamily(FirebaseAuth.instance.currentUser.uid);
+    } else {
+      await FirestoreFamilyController.leaveFamily(uid);
+    }
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+      return HomeScreen();
+    }));
   }
 
   @override
@@ -75,7 +100,7 @@ class _FamilyMemberState extends State<FamilyMember> {
                   ),
                   SizedBox(height: 4),
                   Text(
-                    isCurrentUser ? 'It\'s a me' : 'Family owner',
+                    role == 'OWNER' ? 'Family owner' : 'Family member',
                     style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey
@@ -85,14 +110,12 @@ class _FamilyMemberState extends State<FamilyMember> {
               ),
             ],
           ),
-          IconButton(
+          if (isCurrentUser || isCurrentUserOwner) IconButton(
               icon: Icon(
                 Icons.person_remove_rounded,
                 color: Colors.grey[600],
               ),
-              onPressed: () {
-                print('@TODO Remove person');
-              }
+              onPressed: handleRemoveOnPress,
           ),
         ],
       ),

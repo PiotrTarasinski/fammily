@@ -36,6 +36,7 @@ class _FamilyListState extends State<FamilyList> {
                 for (var element in snapshot.data) FamilyMember(
                   name: element['name'],
                   uid: element['uid'],
+                  role: element['role'],
                 )
               ],
             );

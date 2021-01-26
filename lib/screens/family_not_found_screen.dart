@@ -40,7 +40,6 @@ class _FamilyNotFoundScreenState extends State<FamilyNotFoundScreen> {
   }
 
   onNameChange (String value) {
-    print(value);
     setState(() {
       input = value;
     });

@@ -60,6 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
   _MyHomePageState() {
     _initialization = Firebase.initializeApp().then((FirebaseApp firebaseApp) {
       _user = FirebaseAuth.instance.currentUser;
+      FirebaseAuth.instance.signOut();
       stream = FirebaseAuth.instance.authStateChanges().listen((event) {
         setState(() {
           _user = event;
@@ -74,9 +75,17 @@ class _MyHomePageState extends State<MyHomePage> {
     distanceFilter: 10,
     intervalDuration: Duration(seconds: 5),
   ).listen((Position position) async {
-    GeoPoint geoPoint = GeoPoint(position.latitude, position.longitude);
-    String docId = (await FirestoreUserController.getUser(FirebaseAuth.instance.currentUser.uid)).docs[0].id;
-    FirebaseFirestore.instance.collection('users').doc(docId).update({'location': geoPoint});
+    if (FirebaseAuth.instance.currentUser != null) {
+      GeoPoint geoPoint = GeoPoint(position.latitude, position.longitude);
+      String docId = (await FirestoreUserController.getUser(
+              FirebaseAuth.instance.currentUser.uid))
+          .docs[0]
+          .id;
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(docId)
+          .update({'location': geoPoint});
+    }
   });
 
   @override
@@ -115,7 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
           if (_user != null) {
-            return  HomeScreen();
+            return HomeScreen();
           }
           return LoginScreen();
         }

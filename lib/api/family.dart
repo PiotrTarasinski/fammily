@@ -49,4 +49,21 @@ class FirestoreFamilyController {
     DocumentReference family = (await FirestoreUserController.getUserDataById(user.uid))['family'];
     return (await family.get()).data()['name'];
   }
+
+  static Future<void> leaveFamily(String uid) async {
+    DocumentReference userDocument = await FirestoreUserController.getUserDocument(uid);
+    DocumentReference familyDocument = (await userDocument.get()).data()['family'];
+    String collectionId = (await familyDocument.collection('users').where('user', isEqualTo: userDocument).get()).docs[0].id;
+    await familyDocument.collection('users').doc(collectionId).delete();
+    if ((await userDocument.get()).data()['role'] == 'OWNER') {
+      List<Map<String, dynamic>> users = await FirestoreFamilyController.getFamilyUsers();
+      if (users.length > 0) {
+         DocumentReference newOwnerDocument = await FirestoreUserController.getUserDocument(users[0]['uid']);
+         await newOwnerDocument.update({ 'role': 'OWNER'});
+      } else {
+        await familyDocument.delete();
+      }
+    }
+    await userDocument.update({ 'family': null, 'role': null });
+  }
 }

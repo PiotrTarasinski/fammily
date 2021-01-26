@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return FutureBuilder(
         future: this.user,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasData) {
             if (snapshot.data['family'] != null) {
               return Scaffold(
                 drawer: SideBar(),
