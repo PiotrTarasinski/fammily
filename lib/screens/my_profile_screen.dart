@@ -34,7 +34,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   _MyProfileScreenState() {
     User user = FirebaseAuth.instance.currentUser;
     this.user = FirestoreUserController.getUserDataById(user.uid);
-    FirestoreUserController.getURL(FirebaseAuth.instance.currentUser.uid).then((value) {
+    FirestoreUserController.getURL(FirebaseAuth.instance.currentUser.uid)
+        .then((value) {
       this.setState(() {
         avatarUrl = value;
       });
@@ -64,17 +65,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   padding: EdgeInsets.symmetric(vertical: 6),
                   child: Row(
                     children: <Widget>[
-                      Icon(
-                          Icons.camera_alt,
-                          color: Colors.grey[700]
-                      ),
+                      Icon(Icons.camera_alt, color: Colors.grey[700]),
                       SizedBox(width: 12),
                       Text(
                         'Camera',
-                        style: TextStyle(
-                            color: Colors.grey[700],
-                            fontSize: 16
-                        ),
+                        style: TextStyle(color: Colors.grey[700], fontSize: 16),
                       ),
                     ],
                   ),
@@ -89,17 +84,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   padding: EdgeInsets.symmetric(vertical: 6),
                   child: Row(
                     children: <Widget>[
-                      Icon(
-                          Icons.photo,
-                          color: Colors.grey[700]
-                      ),
+                      Icon(Icons.photo, color: Colors.grey[700]),
                       SizedBox(width: 12),
                       Text(
                         'Gallery',
-                        style: TextStyle(
-                            color: Colors.grey[700],
-                            fontSize: 16
-                        ),
+                        style: TextStyle(color: Colors.grey[700], fontSize: 16),
                       ),
                     ],
                   ),
@@ -125,17 +114,17 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
   submit() async {
     _formKey.currentState.save();
-    if(_image != null) {
+    if (_image != null) {
       String fileName = FirebaseAuth.instance.currentUser.uid + '.jpg';
       try {
         await FirebaseStorage.instance.ref('images/$fileName').putFile(_image);
-      } on FirebaseException catch(e) {
+      } on FirebaseException catch (e) {
         print('Something went wrong');
       }
     }
 
     String docId = (await FirestoreUserController.getUser(
-        FirebaseAuth.instance.currentUser.uid))
+            FirebaseAuth.instance.currentUser.uid))
         .docs[0]
         .id;
     await FirebaseFirestore.instance
@@ -174,9 +163,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               appBar: AppBar(
                 automaticallyImplyLeading: false,
                 leading: IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: () => Navigator.pop(context)
-                ),
+                    icon: Icon(Icons.arrow_back),
+                    onPressed: () => Navigator.pop(context)),
                 title: Text(
                   'My Profile',
                 ),
@@ -192,8 +180,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       onTap: _showDialog,
                       child: CircleAvatar(
                         backgroundColor: Colors.grey[100],
-                        backgroundImage: _image != null ? FileImage(_image)
-                            : avatarUrl != null ? NetworkImage(avatarUrl) : AssetImage('assets/images/default.png'),
+                        backgroundImage: _image != null
+                            ? FileImage(_image)
+                            : avatarUrl != null
+                                ? NetworkImage(avatarUrl)
+                                : AssetImage('assets/images/default.png'),
                         radius: _size.width * 0.2,
                       ),
                     ),
@@ -201,36 +192,34 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 24),
                       child: Form(
-                        key: _formKey,
-                        child: Input(
-                          label: 'Name',
-                          icon: Icon(Icons.person),
-                          keyboardType: TextInputType.name,
-                          initValue: snapshot.data['name'],
-                          onSaveFunc: _data.setName,
-                        )
-                      ),
+                          key: _formKey,
+                          child: Input(
+                            label: 'Name',
+                            icon: Icon(Icons.person),
+                            keyboardType: TextInputType.name,
+                            initValue: snapshot.data['name'],
+                            onSaveFunc: _data.setName,
+                          )),
                     ),
                     SizedBox(height: 32),
                     Container(
                         margin: EdgeInsets.symmetric(horizontal: 24),
                         width: _size.width,
                         child: FlatButton(
-                          color: Colors.deepPurple,
-                          padding: EdgeInsets.symmetric(
-                              vertical: 12, horizontal: 40),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            'Save',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                fontSize: 18),
-                          ),
-                          onPressed: submit
-                        )),
+                            color: Colors.deepPurple,
+                            padding: EdgeInsets.symmetric(
+                                vertical: 12, horizontal: 40),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              'Save',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  fontSize: 18),
+                            ),
+                            onPressed: submit)),
                   ],
                 ),
               ),

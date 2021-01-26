@@ -13,13 +13,8 @@ class FamilyMember extends StatefulWidget {
   final String uid;
   final String role;
   final GeoPoint initialGeoPoint;
-  FamilyMember({
-    this.avatarSrc,
-    this.name,
-    this.uid,
-    this.role,
-    this.initialGeoPoint
-  });
+  FamilyMember(
+      {this.avatarSrc, this.name, this.uid, this.role, this.initialGeoPoint});
   @override
   _FamilyMemberState createState() => _FamilyMemberState(
         avatarSrc: avatarSrc,
@@ -113,7 +108,10 @@ class _FamilyMemberState extends State<FamilyMember> {
 
   handleShowLocation() {
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-      return HomeScreen(initialPosition: LatLng(initialGeoPoint.latitude, initialGeoPoint.longitude), initialIndex: 1);
+      return HomeScreen(
+          initialPosition:
+              LatLng(initialGeoPoint.latitude, initialGeoPoint.longitude),
+          initialIndex: 1);
     }));
   }
 
@@ -166,16 +164,16 @@ class _FamilyMemberState extends State<FamilyMember> {
                   ),
                   onPressed: _showMyDialog,
                 ),
-              if (initialGeoPoint != null) IconButton(
-                icon: Icon(
-                  Icons.location_on,
-                  color: Colors.grey[600],
-                ),
-                onPressed: handleShowLocation,
-              )
+              if (initialGeoPoint != null)
+                IconButton(
+                  icon: Icon(
+                    Icons.location_on,
+                    color: Colors.grey[600],
+                  ),
+                  onPressed: handleShowLocation,
+                )
             ],
           ),
-
         ],
       ),
     );

@@ -31,8 +31,8 @@ class _MapScreenState extends State<MapScreen> {
 
   _MapScreenState({this.initialPosition}) {
     fetchUsersTimeout();
-      currentUserMarkerPosition = FirestoreUserController.getUserDataById(
-          FirebaseAuth.instance.currentUser.uid);
+    currentUserMarkerPosition = FirestoreUserController.getUserDataById(
+        FirebaseAuth.instance.currentUser.uid);
   }
 
   @override
@@ -62,38 +62,44 @@ class _MapScreenState extends State<MapScreen> {
     if (isDefault) {
       Paint paintCircle = Paint()..color = Colors.grey[100];
       canvas.drawCircle(Offset(50, 50), 50, paintCircle);
-  }
+    }
     Path path = Path()
       ..addOval(Rect.fromLTWH(0.0, 0.0, size.width, size.height));
     canvas.clipPath(path);
     canvas.drawImage(frameInfo.image, new Offset(0.0, 0.0), new Paint());
     Picture picture = recorder.endRecording();
-    final ByteData byteData = await (await picture.toImage(100, 100)).toByteData(
+    final ByteData byteData =
+        await (await picture.toImage(100, 100)).toByteData(
       format: ImageByteFormat.png,
     );
     return byteData.buffer.asUint8List();
   }
-  
+
   getIcon(String uid) async {
     BitmapDescriptor icon;
     String url;
     try {
       url = await FirestoreUserController.getURL(uid);
-    }
-    catch (e) {}
+    } catch (e) {}
     if (url != null) {
-      final File markerImageFile = await DefaultCacheManager().getSingleFile(url);
+      final File markerImageFile =
+          await DefaultCacheManager().getSingleFile(url);
       if (markerImageFile != null) {
         final Uint8List markerImageBytes = await markerImageFile.readAsBytes();
 
-
-        icon = BitmapDescriptor.fromBytes(await paintImage(markerImageBytes, false));
+        icon = BitmapDescriptor.fromBytes(
+            await paintImage(markerImageBytes, false));
       } else {
         final http.Response response = await http.get(url);
-        icon = BitmapDescriptor.fromBytes(await paintImage(response.bodyBytes, false));
+        icon = BitmapDescriptor.fromBytes(
+            await paintImage(response.bodyBytes, false));
       }
     } else {
-      icon = BitmapDescriptor.fromBytes(await paintImage((await rootBundle.load('assets/images/default.png')).buffer.asUint8List(), true));
+      icon = BitmapDescriptor.fromBytes(await paintImage(
+          (await rootBundle.load('assets/images/default.png'))
+              .buffer
+              .asUint8List(),
+          true));
     }
     return icon;
   }
@@ -104,14 +110,11 @@ class _MapScreenState extends State<MapScreen> {
       for (Map<String, dynamic> user in users) {
         if (user['location'] != null) {
           markers.add(Marker(
-            markerId: MarkerId(user['uid']),
-            position:
-                LatLng(user['location'].latitude, user['location'].longitude),
-            icon: await getIcon(user['uid']),
-            infoWindow: InfoWindow(
-              title: user['name']
-            )
-          ));
+              markerId: MarkerId(user['uid']),
+              position:
+                  LatLng(user['location'].latitude, user['location'].longitude),
+              icon: await getIcon(user['uid']),
+              infoWindow: InfoWindow(title: user['name'])));
         }
       }
       this.setState(() {
@@ -165,18 +168,3 @@ class _MapScreenState extends State<MapScreen> {
         });
   }
 }
-
-//   Widget build(BuildContext context) {
-//     return GoogleMap(
-//       markers: _markers,
-//       initialCameraPosition: CameraPosition(
-//         target: LatLng(51.2352, 22.5488),
-//         zoom: 14,
-//       ),
-//       onMapCreated: (GoogleMapController controller) {
-//         _controller.complete(controller);
-//         // _initCameraPosition();
-//       },
-//     );
-//   }
-// }

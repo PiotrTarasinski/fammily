@@ -63,11 +63,9 @@ class _SideBarState extends State<SideBar> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return MyProfileScreen();
-                  }
-                ),
+                MaterialPageRoute(builder: (context) {
+                  return MyProfileScreen();
+                }),
               );
             },
           ),

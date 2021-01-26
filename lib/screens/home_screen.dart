@@ -12,9 +12,11 @@ class HomeScreen extends StatefulWidget {
   final LatLng initialPosition;
   final int initialIndex;
 
-  const HomeScreen({Key key, this.initialPosition, this.initialIndex}) : super(key: key);
+  const HomeScreen({Key key, this.initialPosition, this.initialIndex})
+      : super(key: key);
   @override
-  _HomeScreenState createState() => _HomeScreenState(initialIndex: initialIndex, initialPosition: initialPosition);
+  _HomeScreenState createState() => _HomeScreenState(
+      initialIndex: initialIndex, initialPosition: initialPosition);
 }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -64,7 +66,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 body: Container(
                   width: double.infinity,
                   height: _size.height,
-                  child: _widgetOptions.elementAt(initialIndex != null ? initialIndex : _selectedIndex),
+                  child: _widgetOptions.elementAt(
+                      initialIndex != null ? initialIndex : _selectedIndex),
                 ),
                 bottomNavigationBar: BottomNavigationBar(
                   showSelectedLabels: false,
@@ -85,7 +88,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       label: 'Chat',
                     ),
                   ],
-                  currentIndex: initialIndex != null ? initialIndex : _selectedIndex,
+                  currentIndex:
+                      initialIndex != null ? initialIndex : _selectedIndex,
                   onTap: (int index) {
                     setState(() {
                       _selectedIndex = index;

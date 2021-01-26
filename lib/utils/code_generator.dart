@@ -1,9 +1,7 @@
 import 'dart:math';
 
 class FamilyCodeGenerator {
-
-  static String getRandomString(int length)
-  {
+  static String getRandomString(int length) {
     final _chars = 'QWERTYUIOPASDFGHJKLZXCVBNM1234567890';
     Random _rnd = Random();
     return String.fromCharCodes(Iterable.generate(

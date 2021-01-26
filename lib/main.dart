@@ -10,29 +10,9 @@ import 'package:geolocator/geolocator.dart';
 
 import 'screens/home_screen.dart';
 
-// void main() => runApp(MaterialApp(
-//   home: LoginScreen(),
-// ));
-//
-// class Home extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//         body: Center(
-//             child: FlatButton(
-//                 color: Colors.deepPurple,
-//                 onPressed: () => {Geolocator.getCurrentPosition().then((Position position) => print(position))},
-//                 child: Text('Get Current Location', style: TextStyle(color: Colors.white),)
-//             )
-//         )
-//     );
-//   }
-// }
-
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -76,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
           if (FirebaseAuth.instance.currentUser != null) {
             GeoPoint geoPoint = GeoPoint(position.latitude, position.longitude);
             String docId = (await FirestoreUserController.getUser(
-                FirebaseAuth.instance.currentUser.uid))
+                    FirebaseAuth.instance.currentUser.uid))
                 .docs[0]
                 .id;
             FirebaseFirestore.instance
@@ -97,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
         if (FirebaseAuth.instance.currentUser != null) {
           GeoPoint geoPoint = GeoPoint(position.latitude, position.longitude);
           String docId = (await FirestoreUserController.getUser(
-              FirebaseAuth.instance.currentUser.uid))
+                  FirebaseAuth.instance.currentUser.uid))
               .docs[0]
               .id;
           FirebaseFirestore.instance
@@ -109,8 +89,6 @@ class _MyHomePageState extends State<MyHomePage> {
       return firebaseApp;
     });
   }
-
-
 
   @override
   void dispose() {
@@ -137,23 +115,14 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      // Initialize FlutterFire:
       future: _initialization,
       builder: (context, snapshot) {
-        // Check for errors
-        if (snapshot.hasError) {
-          // return SomethingWentWrong();
-        }
-
-        // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
           if (_user != null) {
             return HomeScreen();
           }
           return LoginScreen();
         }
-
-        // Otherwise, show something whilst waiting for initialization to complete
         return loading();
       },
     );
