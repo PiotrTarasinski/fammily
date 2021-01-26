@@ -56,6 +56,37 @@ class _FamilyMemberState extends State<FamilyMember> {
     });
   }
 
+  Future<void> _showMyDialog() async {
+    String message = isCurrentUser ? 'Are you sure you want to leave this family?' : 'Are you sure you want to remove this user from the family?';
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(message),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Confirm'),
+              onPressed: handleRemoveOnPress,
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   handleRemoveOnPress() async {
     if (isCurrentUser) {
       await FirestoreFamilyController.leaveFamily(FirebaseAuth.instance.currentUser.uid);
@@ -115,7 +146,7 @@ class _FamilyMemberState extends State<FamilyMember> {
                 Icons.person_remove_rounded,
                 color: Colors.grey[600],
               ),
-              onPressed: handleRemoveOnPress,
+              onPressed: _showMyDialog,
           ),
         ],
       ),

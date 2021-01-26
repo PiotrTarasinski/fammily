@@ -22,7 +22,7 @@ class FirestoreFamilyController {
     CollectionReference families = FirebaseFirestore.instance.collection('family');
     DocumentReference newFamily = await families.add({ 'code': FamilyCodeGenerator.generateCode(), 'name': name });
     await newFamily.collection('users').add({ 'user': userDocument });
-    await userDocument.update({ 'family': newFamily });
+    await userDocument.update({ 'family': newFamily, 'role': 'OWNER' });
   }
 
   static Future<void> joinFamily(String code) async {
