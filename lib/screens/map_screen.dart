@@ -31,21 +31,10 @@ class _MapScreenState extends State<MapScreen> {
   Future<List<Map<String, dynamic>>> users;
   Set<Marker> _markers;
 
-  futureMockPosition() async {
-    return {
-      'location': GeoPoint(
-          this.initialPosition.latitude, this.initialPosition.longitude)
-    };
-  }
-
   _MapScreenState({this.initialPosition}) {
     fetchUsersTimeout();
-    if (initialPosition == null) {
       currentUserMarkerPosition = FirestoreUserController.getUserDataById(
           FirebaseAuth.instance.currentUser.uid);
-    } else {
-      currentUserMarkerPosition = futureMockPosition();
-    }
   }
 
   @override
@@ -145,6 +134,12 @@ class _MapScreenState extends State<MapScreen> {
       );
 
   getInitCameraPosition(Map<String, dynamic> position) {
+    if (this.initialPosition != null) {
+      return CameraPosition(
+        target: this.initialPosition,
+        zoom: 14,
+      );
+    }
     LatLng _initCameraPosition =
         LatLng(position['location'].latitude, position['location'].longitude);
 

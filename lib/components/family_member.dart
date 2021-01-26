@@ -1,20 +1,24 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fammily/api/family.dart';
 import 'package:fammily/api/user.dart';
 import 'package:fammily/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class FamilyMember extends StatefulWidget {
   final String avatarSrc;
   final String name;
   final String uid;
   final String role;
+  final GeoPoint initialGeoPoint;
   FamilyMember({
     this.avatarSrc,
     this.name,
     this.uid,
     this.role,
+    this.initialGeoPoint
   });
   @override
   _FamilyMemberState createState() => _FamilyMemberState(
@@ -22,6 +26,7 @@ class FamilyMember extends StatefulWidget {
         name: name,
         uid: this.uid,
         role: this.role,
+        initialGeoPoint: this.initialGeoPoint,
       );
 }
 
@@ -30,6 +35,7 @@ class _FamilyMemberState extends State<FamilyMember> {
   final String name;
   final String uid;
   final String role;
+  final GeoPoint initialGeoPoint;
   bool isCurrentUser = false;
   bool isCurrentUserOwner = false;
   String url;
@@ -39,6 +45,7 @@ class _FamilyMemberState extends State<FamilyMember> {
     this.name,
     this.uid,
     this.role,
+    this.initialGeoPoint,
   }) {
     this.isCurrentUser = FirebaseAuth.instance.currentUser.uid == this.uid;
     FirestoreUserController.getURL(uid)
@@ -104,6 +111,12 @@ class _FamilyMemberState extends State<FamilyMember> {
     }));
   }
 
+  handleShowLocation() {
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+      return HomeScreen(initialPosition: LatLng(initialGeoPoint.latitude, initialGeoPoint.longitude), initialIndex: 1);
+    }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -143,14 +156,26 @@ class _FamilyMemberState extends State<FamilyMember> {
               ),
             ],
           ),
-          if (isCurrentUser || isCurrentUserOwner)
-            IconButton(
-              icon: Icon(
-                Icons.person_remove_rounded,
-                color: Colors.grey[600],
-              ),
-              onPressed: _showMyDialog,
-            ),
+          Row(
+            children: [
+              if (isCurrentUser || isCurrentUserOwner)
+                IconButton(
+                  icon: Icon(
+                    Icons.person_remove_rounded,
+                    color: Colors.grey[600],
+                  ),
+                  onPressed: _showMyDialog,
+                ),
+              if (initialGeoPoint != null) IconButton(
+                icon: Icon(
+                  Icons.location_on,
+                  color: Colors.grey[600],
+                ),
+                onPressed: handleShowLocation,
+              )
+            ],
+          ),
+
         ],
       ),
     );

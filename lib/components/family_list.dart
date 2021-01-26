@@ -38,6 +38,7 @@ class _FamilyListState extends State<FamilyList> {
                     name: element['name'],
                     uid: element['uid'],
                     role: element['role'],
+                    initialGeoPoint: element['location'],
                   )
               ],
             );
