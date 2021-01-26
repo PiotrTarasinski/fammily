@@ -28,6 +28,8 @@ dependencies:
   cloud_firestore: "^0.14.3"
   firebase_storage: "^5.0.1"
   google_sign_in: "^4.5.1"
+  flutter_cache_manager: ^2.1.1
+  http: any
   flutter:
     sdk: flutter
 
