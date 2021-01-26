@@ -1,9 +1,12 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fammily/api/user.dart';
 import 'package:fammily/components/input.dart';
 import 'package:fammily/components/side_bar.dart';
+import 'package:fammily/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 import 'package:image_picker/image_picker.dart';
@@ -13,7 +16,16 @@ class MyProfileScreen extends StatefulWidget {
   _MyProfileScreenState createState() => _MyProfileScreenState();
 }
 
+class _UserData {
+  String name = '';
+  void setName(String value) {
+    this.name = value;
+  }
+}
+
 class _MyProfileScreenState extends State<MyProfileScreen> {
+  final _formKey = GlobalKey<FormState>();
+  _UserData _data = new _UserData();
   Future<Map<String, dynamic>> user;
   String avatarUrl;
   File _image;
@@ -111,6 +123,30 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     });
   }
 
+  submit() async {
+    _formKey.currentState.save();
+    if(_image != null) {
+      String fileName = FirebaseAuth.instance.currentUser.uid + '.jpg';
+      try {
+        await FirebaseStorage.instance.ref('images/$fileName').putFile(_image);
+      } on FirebaseException catch(e) {
+        print('Something went wrong');
+      }
+    }
+
+    String docId = (await FirestoreUserController.getUser(
+        FirebaseAuth.instance.currentUser.uid))
+        .docs[0]
+        .id;
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(docId)
+        .update({'name': _data.name});
+
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+      return HomeScreen();
+    }));
+  }
 
   Widget loading() {
     return Scaffold(
@@ -163,13 +199,17 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     ),
                     SizedBox(height: 24),
                     Container(
-                        margin: EdgeInsets.symmetric(horizontal: 24),
+                      margin: EdgeInsets.symmetric(horizontal: 24),
+                      child: Form(
+                        key: _formKey,
                         child: Input(
                           label: 'Name',
                           icon: Icon(Icons.person),
                           keyboardType: TextInputType.name,
                           initValue: snapshot.data['name'],
+                          onSaveFunc: _data.setName,
                         )
+                      ),
                     ),
                     SizedBox(height: 32),
                     Container(
@@ -189,7 +229,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                 color: Colors.white,
                                 fontSize: 18),
                           ),
-                          onPressed: () {},
+                          onPressed: submit
                         )),
                   ],
                 ),

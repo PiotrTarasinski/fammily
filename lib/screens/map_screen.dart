@@ -4,8 +4,6 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'dart:math' as math;
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fammily/api/family.dart';
 import 'package:fammily/api/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -62,7 +60,7 @@ class _MapScreenState extends State<MapScreen> {
     Canvas canvas = new Canvas(recorder);
     final size = Size(100, 100);
     if (isDefault) {
-      Paint paintCircle = Paint()..color = Colors.deepPurple;
+      Paint paintCircle = Paint()..color = Colors.grey[100];
       canvas.drawCircle(Offset(50, 50), 50, paintCircle);
   }
     Path path = Path()
