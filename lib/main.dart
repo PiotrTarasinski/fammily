@@ -56,6 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<FirebaseApp> _initialization;
   User _user;
   StreamSubscription<User> stream;
+  StreamSubscription<Position> positionStream;
 
   _MyHomePageState() {
     _initialization = Firebase.initializeApp().then((FirebaseApp firebaseApp) {
@@ -64,28 +65,52 @@ class _MyHomePageState extends State<MyHomePage> {
         setState(() {
           _user = event;
         });
+        if (positionStream != null) {
+          positionStream.cancel();
+        }
+        positionStream = Geolocator.getPositionStream(
+          desiredAccuracy: LocationAccuracy.high,
+          distanceFilter: 10,
+          intervalDuration: Duration(seconds: 5),
+        ).listen((Position position) async {
+          if (FirebaseAuth.instance.currentUser != null) {
+            GeoPoint geoPoint = GeoPoint(position.latitude, position.longitude);
+            String docId = (await FirestoreUserController.getUser(
+                FirebaseAuth.instance.currentUser.uid))
+                .docs[0]
+                .id;
+            FirebaseFirestore.instance
+                .collection('users')
+                .doc(docId)
+                .update({'location': geoPoint});
+          }
+        });
+      });
+      if (positionStream != null) {
+        positionStream.cancel();
+      }
+      positionStream = Geolocator.getPositionStream(
+        desiredAccuracy: LocationAccuracy.high,
+        distanceFilter: 10,
+        intervalDuration: Duration(seconds: 5),
+      ).listen((Position position) async {
+        if (FirebaseAuth.instance.currentUser != null) {
+          GeoPoint geoPoint = GeoPoint(position.latitude, position.longitude);
+          String docId = (await FirestoreUserController.getUser(
+              FirebaseAuth.instance.currentUser.uid))
+              .docs[0]
+              .id;
+          FirebaseFirestore.instance
+              .collection('users')
+              .doc(docId)
+              .update({'location': geoPoint});
+        }
       });
       return firebaseApp;
     });
   }
 
-  StreamSubscription<Position> positionStream = Geolocator.getPositionStream(
-    desiredAccuracy: LocationAccuracy.high,
-    distanceFilter: 10,
-    intervalDuration: Duration(seconds: 5),
-  ).listen((Position position) async {
-    if (FirebaseAuth.instance.currentUser != null) {
-      GeoPoint geoPoint = GeoPoint(position.latitude, position.longitude);
-      String docId = (await FirestoreUserController.getUser(
-              FirebaseAuth.instance.currentUser.uid))
-          .docs[0]
-          .id;
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(docId)
-          .update({'location': geoPoint});
-    }
-  });
+
 
   @override
   void dispose() {
