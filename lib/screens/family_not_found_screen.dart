@@ -21,7 +21,6 @@ class _FamilyData {
 class _FamilyNotFoundScreenState extends State<FamilyNotFoundScreen> {
   final _formKey = GlobalKey<FormState>();
   _FamilyData _data = new _FamilyData();
-  String input;
 
   createFamily() async {
     _formKey.currentState.save();
@@ -37,12 +36,6 @@ class _FamilyNotFoundScreenState extends State<FamilyNotFoundScreen> {
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
       return HomeScreen();
     }));
-  }
-
-  onNameChange(String value) {
-    setState(() {
-      input = value;
-    });
   }
 
   @override
