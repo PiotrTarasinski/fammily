@@ -1,8 +1,6 @@
 import 'package:fammily/api/family.dart';
-import 'package:fammily/api/user.dart';
 import 'package:fammily/components/family_list.dart';
 import 'package:fammily/components/invite_code.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class FamilyScreen extends StatefulWidget {
@@ -30,15 +28,6 @@ class _FamilyScreenState extends State<FamilyScreen> {
           children: <Widget>[
             AppBar(
               automaticallyImplyLeading: false,
-              actions: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.settings),
-                  // color: Colors.grey[600],
-                  onPressed: () {
-                    print('@TODO Go to family settings');
-                  },
-                ),
-              ],
               title: Text(
                 _familyName
               ),

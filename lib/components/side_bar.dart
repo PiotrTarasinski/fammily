@@ -1,5 +1,6 @@
 import 'package:fammily/api/user.dart';
 import 'package:fammily/screens/login_screen.dart';
+import 'package:fammily/screens/my_profile_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -60,8 +61,14 @@ class _SideBarState extends State<SideBar> {
               ),
             ),
             onTap: () {
-              print('@TODO Redirect to profile screen');
-              Navigator.pop(context); // close the drawer
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return MyProfileScreen();
+                  }
+                ),
+              );
             },
           ),
           ListTile(

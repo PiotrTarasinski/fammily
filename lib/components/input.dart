@@ -1,10 +1,10 @@
-import 'package:fammily/utils/styles.dart';
 import 'package:flutter/material.dart';
 
 class Input extends StatefulWidget {
   final String label;
   final String hintText;
   final Icon  icon;
+  final String initValue;
   final IconButton  suffixIcon;
   final bool obscureText;
   final TextInputType keyboardType;
@@ -13,6 +13,7 @@ class Input extends StatefulWidget {
       {this.label,
         this.hintText,
         this.icon,
+        this.initValue = '',
         this.obscureText = false,
         this.onSaveFunc,
         this.keyboardType,
@@ -21,6 +22,7 @@ class Input extends StatefulWidget {
   _InputState createState() => _InputState(
       hintText: hintText,
       icon: icon,
+      initValue: initValue,
       label: label,
       obscureText: obscureText,
       onSaveFunc: onSaveFunc,
@@ -32,6 +34,7 @@ class _InputState extends State<Input> {
   final String label;
   final String hintText;
   final Icon icon;
+  final String initValue;
   final IconButton suffixIcon;
   final bool obscureText;
   final TextInputType keyboardType;
@@ -39,13 +42,17 @@ class _InputState extends State<Input> {
   String error;
 
   _InputState(
-      {this.label,
+      {
+        this.label,
         this.hintText,
         this.icon,
+        this.initValue,
         this.obscureText = false,
         this.onSaveFunc,
         this.keyboardType,
-        this.suffixIcon});
+        this.suffixIcon
+      }
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +76,7 @@ class _InputState extends State<Input> {
               onSaveFunc(value);
             },
             obscureText: obscureText,
+            initialValue: initValue,
             keyboardType: this.keyboardType,
             decoration: InputDecoration(
                 labelText: this.label,
